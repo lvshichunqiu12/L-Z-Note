@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>花径笔记工作区</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./flower.css">
+</head>
+<body>
+  <div class="flower-shell">
+    <aside class="flower-sidebar">
+      <div class="brand-block">
+        <p class="eyebrow">Petal Atelier</p>
+        <h1>Blossom Notes</h1>
+        <p class="brand-copy">把书写搬进一座开花的工作室里。色彩偏粉白，但会留一点苔绿、蜜金和晚霞橘，让画面不至于发腻。</p>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="主题导航">
+        <a class="nav-item" href="./index.html">
+          <span class="nav-icon">泉</span>
+          <span>泉 · 流水手记</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">山</span>
+          <span>山 · 云岭草稿</span>
+        </a>
+        <a class="nav-item active" href="./flower.html" aria-current="page">
+          <span class="nav-icon">花</span>
+          <span>花 · 花径摘录</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">月</span>
+          <span>月 · 夜色札记</span>
+        </a>
+      </nav>
+
+      <section class="sidebar-card ambient-card">
+        <div class="card-head">
+          <p class="eyebrow">Bloom Climate</p>
+          <strong>花气环境</strong>
+        </div>
+        <p>光线像薄纱，空气里有轻微花香。输入时不再是水纹，而是从光标边缘滑出的花瓣。</p>
+        <div class="blush-meter" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="sidebar-card companions-card">
+        <div class="card-head">
+          <p class="eyebrow">Petal Layers</p>
+          <strong>点缀色阶</strong>
+        </div>
+        <ul class="companion-list">
+          <li><span>樱粉</span><small>主色，铺出轻柔底气</small></li>
+          <li><span>玉白</span><small>留白，保住呼吸感</small></li>
+          <li><span>苔绿</span><small>压一压甜度，负责平衡</small></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main class="flower-workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Flower Workspace</p>
+          <h2>花径沉浸笔记页</h2>
+        </div>
+        <div class="topbar-actions">
+          <div class="time-pill">
+            <span>花时刻</span>
+            <strong id="clock">--:--</strong>
+          </div>
+          <button class="pill-button" type="button">微风模式</button>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div class="hero-backdrop" aria-hidden="true">
+          <div class="blossom-cloud blossom-a"></div>
+          <div class="blossom-cloud blossom-b"></div>
+          <div class="branch branch-a"></div>
+          <div class="branch branch-b"></div>
+          <div class="petal-drift drift-a"></div>
+          <div class="petal-drift drift-b"></div>
+          <div class="petal-drift drift-c"></div>
+          <div class="pollen pollen-a"></div>
+          <div class="pollen pollen-b"></div>
+          <div class="pollen pollen-c"></div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">Floral Focus Habitat</p>
+          <h3>让字句像落入花间的风里，不喧哗，只轻轻扬起几片花瓣。</h3>
+          <p>主工作区以粉白色为底，加入微弱的绿和金做平衡。输入时，花瓣会从光标附近缓缓浮起、飘散，再慢慢隐去，整体更柔和、更安静。</p>
+        </div>
+
+        <div class="hero-ribbon">
+          <span>Petal typing</span>
+          <span>Soft pink light</span>
+          <span>Moss green accent</span>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="editor-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Bloom Draft</p>
+              <h3>花影草稿</h3>
+            </div>
+            <div class="panel-tools" aria-label="编辑操作">
+              <button type="button">保存花签</button>
+              <button type="button">折叠花枝</button>
+            </div>
+          </div>
+
+          <div class="editor-controls" aria-label="编辑设置">
+            <div class="font-size-control">
+              <span class="control-label">字号</span>
+              <button class="size-button" id="decreaseFont" type="button" aria-label="减小字号">A-</button>
+              <input
+                class="size-slider"
+                id="fontSizeSlider"
+                type="range"
+                min="16"
+                max="26"
+                step="1"
+                value="18"
+                aria-label="调整编辑区字号"
+              >
+              <button class="size-button" id="increaseFont" type="button" aria-label="增大字号">A+</button>
+              <strong class="size-value" id="fontSizeValue">18px</strong>
+            </div>
+          </div>
+
+          <div class="editor-wrap" id="editorWrap">
+            <div class="petal-sheen" aria-hidden="true"></div>
+            <div class="editor-header">
+              <span class="tag">花序草稿</span>
+              <span class="hint">输入时会有花瓣从光标边缘轻轻散开</span>
+            </div>
+            <div
+              class="editor"
+              id="editor"
+              contenteditable="true"
+              spellcheck="false"
+              aria-label="花主题笔记编辑区"
+            >午后的光穿过花枝，桌面上落下一层柔软的影子。你可以在这里写下不急着说出口的想法，让句子先像花瓣一样，安静地悬停片刻，再落进页里。</div>
+            <div class="editor-footer">
+              <span>建议：更适合写日记、灵感句和带一点留白的段落。</span>
+              <strong id="charCount">59 字</strong>
+            </div>
+            <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <aside class="insight-column">
+          <article class="floating-card palette-card">
+            <p class="eyebrow">Bloom Palette</p>
+            <h3>花色配方</h3>
+            <div class="swatches" aria-hidden="true">
+              <span style="--swatch:#fff8f8;"></span>
+              <span style="--swatch:#fde8ee;"></span>
+              <span style="--swatch:#f5c7d6;"></span>
+              <span style="--swatch:#c6d9c7;"></span>
+              <span style="--swatch:#edc98b;"></span>
+            </div>
+            <p>以粉白为主，不是纯甜风。用苔绿和一点蜜金收住气质，让页面像真正有空气的花房，而不是一整片糖霜。</p>
+          </article>
+
+          <article class="floating-card ritual-card">
+            <p class="eyebrow">Writing Mood</p>
+            <h3>花页节奏</h3>
+            <ul>
+              <li>句子可以短一点，像一片花瓣一片花瓣地落。</li>
+              <li>适合摘抄、晨间手记、温柔但不松散的灵感笔记。</li>
+              <li>如果想更空灵，可以把字号调大一点，段落更稀一点。</li>
+            </ul>
+          </article>
+
+          <article class="floating-card creature-card">
+            <div class="creature-mark" aria-hidden="true">🌸</div>
+            <div>
+              <p class="eyebrow">Seasonal Note</p>
+              <h3>春日提醒</h3>
+              <p>“让页面轻一点，文字就会更像在呼吸。”</p>
+            </div>
+          </article>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="./flower.js"></script>
+</body>
+</html>

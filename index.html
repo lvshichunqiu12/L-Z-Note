@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>山溪笔记工作区</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <p class="eyebrow">Mountain Atelier</p>
+        <h1>Murmur Notes</h1>
+        <p class="brand-copy">一处适合安静思考的山谷书桌，云影、溪光与草木一起陪你写字。</p>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="主导航">
+        <a class="nav-item active" href="./index.html" aria-current="page">
+          <span class="nav-icon">泉</span>
+          <span>流水手记</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">山</span>
+          <span>高山档案</span>
+        </a>
+        <a class="nav-item" href="./flower.html">
+          <span class="nav-icon">花</span>
+          <span>花径摘录</span>
+        </a>
+        <a class="nav-item" href="#">
+          <span class="nav-icon">月</span>
+          <span>月下灵感</span>
+        </a>
+      </nav>
+
+      <section class="sidebar-card ambient-card">
+        <div class="card-head">
+          <p class="eyebrow">Ambient Layer</p>
+          <strong>沉浸环境</strong>
+        </div>
+        <p>薄雾已开启，溪水正缓慢流动，适合专注记录。</p>
+        <div class="ambient-meter" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="sidebar-card companions-card">
+        <div class="card-head">
+          <p class="eyebrow">Forest Companions</p>
+          <strong>自然陪伴</strong>
+        </div>
+        <ul class="companion-list">
+          <li><span>燕雀</span><small>正在溪边停留</small></li>
+          <li><span>山茶</span><small>花瓣在风里轻晃</small></li>
+          <li><span>白鹿</span><small>从远山雾线经过</small></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Flow Workspace</p>
+          <h2>高山流水笔记页</h2>
+        </div>
+        <div class="topbar-actions">
+          <div class="time-pill">
+            <span>云谷时刻</span>
+            <strong id="clock">--:--</strong>
+          </div>
+          <button class="pill-button" type="button">专注模式</button>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div class="hero-backdrop" aria-hidden="true">
+          <div class="mountain mountain-a"></div>
+          <div class="mountain mountain-b"></div>
+          <div class="mountain mountain-c"></div>
+          <div class="river"></div>
+          <div class="mist mist-a"></div>
+          <div class="mist mist-b"></div>
+          <div class="petal petal-a"></div>
+          <div class="petal petal-b"></div>
+          <div class="bird bird-a"></div>
+          <div class="bird bird-b"></div>
+          <div class="deer"></div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">Immersive Study Habitat</p>
+          <h3>让每一行文字，像落入溪面的雨点一样，轻轻泛开。</h3>
+          <p>主编辑区模拟静水书写体验，输入时会从光标附近扩散波纹；界面保持浅色、柔光和层层山景，让注意力自然收束。</p>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="editor-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Draft Surface</p>
+              <h3>溪面草稿</h3>
+            </div>
+            <div class="panel-tools" aria-label="编辑操作">
+              <button type="button">保存露珠</button>
+              <button type="button">分享山风</button>
+            </div>
+          </div>
+
+          <div class="editor-controls" aria-label="编辑设置">
+            <div class="font-size-control">
+              <span class="control-label">字号</span>
+              <button class="size-button" id="decreaseFont" type="button" aria-label="减小字号">A-</button>
+              <input
+                class="size-slider"
+                id="fontSizeSlider"
+                type="range"
+                min="16"
+                max="26"
+                step="1"
+                value="18"
+                aria-label="调整编辑区字号"
+              >
+              <button class="size-button" id="increaseFont" type="button" aria-label="增大字号">A+</button>
+              <strong class="size-value" id="fontSizeValue">18px</strong>
+            </div>
+          </div>
+
+          <div class="editor-wrap" id="editorWrap">
+            <div class="water-sheen" aria-hidden="true"></div>
+            <div class="editor-header">
+              <span class="tag">晨读笔记</span>
+              <span class="hint">输入时会在光标处产生波纹</span>
+            </div>
+            <div
+              class="editor"
+              id="editor"
+              contenteditable="true"
+              spellcheck="false"
+              aria-label="笔记编辑区"
+            >今天的山谷很安静，云影缓缓滑过山脊，溪水把清晨的光切成细碎的银片。试着在这里记录你的想法，看看文字落下时，水面会怎样回应。</div>
+            <div class="editor-footer">
+              <span>建议：用短句开始，像把石子轻轻放进水里。</span>
+              <strong id="charCount">52 字</strong>
+            </div>
+            <div class="ripple-layer" id="rippleLayer" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <aside class="insight-column">
+          <article class="floating-card palette-card">
+            <p class="eyebrow">Scene Palette</p>
+            <h3>色彩气息</h3>
+            <div class="swatches" aria-hidden="true">
+              <span style="--swatch:#edf5ef;"></span>
+              <span style="--swatch:#dcefe9;"></span>
+              <span style="--swatch:#badfd6;"></span>
+              <span style="--swatch:#8dbdb5;"></span>
+            </div>
+            <p>以雾白、溪青、草木绿和远山灰蓝铺底，避免压迫感，维持学习环境的轻盈与呼吸感。</p>
+          </article>
+
+          <article class="floating-card ritual-card">
+            <p class="eyebrow">Study Ritual</p>
+            <h3>沉浸式节奏</h3>
+            <ul>
+              <li>先写一个关键词，等待水纹散开。</li>
+              <li>让段落之间留白，像河道之间的浅滩。</li>
+              <li>累了就看看右上角云影和飞鸟，给大脑换气。</li>
+            </ul>
+          </article>
+
+          <article class="floating-card creature-card">
+            <div class="creature-mark" aria-hidden="true">🐇</div>
+            <div>
+              <p class="eyebrow">Quiet Visitor</p>
+              <h3>小兽提醒</h3>
+              <p>“慢一点写，也会写得更深。”</p>
+            </div>
+          </article>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
