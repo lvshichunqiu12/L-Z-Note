@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>山岭笔记工作区</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./mountain.css">
+</head>
+<body>
+  <div class="mountain-shell">
+    <aside class="mountain-sidebar">
+      <div class="brand-block">
+        <p class="eyebrow">Ridge Atelier</p>
+        <h1>Summit Notes</h1>
+        <p class="brand-copy">这页不是柔和风景，而是高处的秩序感。岩层、云海和松影把空间撑住，让思路像沿着山脊一样一段段立起来。</p>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="主题导航">
+        <a class="nav-item" href="./index.html">
+          <span class="nav-icon">泉</span>
+          <span>泉 · 流水手记</span>
+        </a>
+        <a class="nav-item active" href="./mountain.html" aria-current="page">
+          <span class="nav-icon">山</span>
+          <span>山 · 云岭草稿</span>
+        </a>
+        <a class="nav-item" href="./flower.html">
+          <span class="nav-icon">花</span>
+          <span>花 · 花径摘录</span>
+        </a>
+        <a class="nav-item" href="./moon.html">
+          <span class="nav-icon">月</span>
+          <span>月 · 银夜札记</span>
+        </a>
+      </nav>
+
+      <section class="sidebar-card ambient-card">
+        <div class="card-head">
+          <p class="eyebrow">Summit Climate</p>
+          <strong>高处气候</strong>
+        </div>
+        <p>空气冷，视野开。输入时，山雾会从光标附近被轻轻拨开，像你在云层里整理出一条能继续往前走的路径。</p>
+        <div class="ridge-meter" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="sidebar-card companions-card">
+        <div class="card-head">
+          <p class="eyebrow">Terrain Layers</p>
+          <strong>山体构成</strong>
+        </div>
+        <ul class="companion-list">
+          <li><span>岩层灰</span><small>负责骨架和稳定感</small></li>
+          <li><span>云海白</span><small>负责留白与呼吸</small></li>
+          <li><span>矿石蓝</span><small>负责冷静与高差感</small></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main class="mountain-workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Mountain Workspace</p>
+          <h2>云岭沉浸笔记页</h2>
+        </div>
+        <div class="topbar-actions">
+          <div class="time-pill">
+            <span>山时刻</span>
+            <strong id="clock">--:--</strong>
+          </div>
+          <button class="pill-button" type="button">高处模式</button>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div class="hero-backdrop" aria-hidden="true">
+          <div class="sun-glow"></div>
+          <div class="sun-disc"></div>
+          <div class="ridge ridge-a"></div>
+          <div class="ridge ridge-b"></div>
+          <div class="ridge ridge-c"></div>
+          <div class="cloud-band cloud-a"></div>
+          <div class="cloud-band cloud-b"></div>
+          <div class="contour contour-a"></div>
+          <div class="contour contour-b"></div>
+          <div class="pine pine-a"></div>
+          <div class="pine pine-b"></div>
+          <div class="bird bird-a"></div>
+          <div class="bird bird-b"></div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">Ridge Focus Habitat</p>
+          <h3>让想法像沿着山脊整理方向，一段一段站稳，而不是在风景里散开。</h3>
+          <p>整体色调介于亮与暗之间，像清晨高海拔的冷空气。输入时，光标附近会有一小团山雾被轻轻拨开，短暂露出更清晰的层次。</p>
+        </div>
+
+        <div class="hero-ribbon">
+          <span>Ridge layers</span>
+          <span>Cloud sea motion</span>
+          <span>Mist typing</span>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="editor-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Ridge Draft</p>
+              <h3>山脊草稿</h3>
+            </div>
+            <div class="panel-tools" aria-label="编辑操作">
+              <button type="button">保存路标</button>
+              <button type="button">折叠云层</button>
+            </div>
+          </div>
+
+          <div class="editor-controls" aria-label="编辑设置">
+            <div class="font-size-control">
+              <span class="control-label">字号</span>
+              <button class="size-button" id="decreaseFont" type="button" aria-label="减小字号">A-</button>
+              <input
+                class="size-slider"
+                id="fontSizeSlider"
+                type="range"
+                min="16"
+                max="26"
+                step="1"
+                value="18"
+                aria-label="调整编辑区字号"
+              >
+              <button class="size-button" id="increaseFont" type="button" aria-label="增大字号">A+</button>
+              <strong class="size-value" id="fontSizeValue">18px</strong>
+            </div>
+          </div>
+
+          <div class="editor-wrap" id="editorWrap">
+            <div class="ridge-sheen" aria-hidden="true"></div>
+            <div class="topography topography-a" aria-hidden="true"></div>
+            <div class="topography topography-b" aria-hidden="true"></div>
+            <div class="editor-header">
+              <span class="tag">峰线草稿</span>
+              <span class="hint">输入时会像云层拨开，露出一瞬暖金晨光</span>
+            </div>
+            <div
+              class="editor"
+              id="editor"
+              contenteditable="true"
+              spellcheck="false"
+              aria-label="山主题笔记编辑区"
+            >站在高处时，很多事情会自动排出先后。视线越远，句子越不需要着急。把那些真正重要的判断留在这里，像沿着山脊留下清楚的脚印。</div>
+            <div class="editor-footer">
+              <span>建议：适合写结构梳理、学习框架、复盘和更有骨架的长段文字。</span>
+              <strong id="charCount">56 字</strong>
+            </div>
+            <div class="mist-layer" id="mistLayer" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <aside class="insight-column">
+          <article class="floating-card palette-card">
+            <p class="eyebrow">Ridge Palette</p>
+            <h3>山色分层</h3>
+            <div class="swatches" aria-hidden="true">
+              <span style="--swatch:#f0f2ee;"></span>
+              <span style="--swatch:#dce2db;"></span>
+              <span style="--swatch:#8f978f;"></span>
+              <span style="--swatch:#6d7c83;"></span>
+              <span style="--swatch:#b18a5b;"></span>
+            </div>
+            <p>主色不走森林绿，而是偏岩层和冷雾。用少量铜金提一点晨光，让画面更像高处真实存在的空气，而不是单纯风景插画。</p>
+          </article>
+
+          <article class="floating-card ritual-card">
+            <p class="eyebrow">Mountain Rhythm</p>
+            <h3>山页节奏</h3>
+            <ul>
+              <li>适合把想法拆成层级，像沿着海拔一点点上行。</li>
+              <li>比花页更理性，比月页更清醒，适合清晨和白天长时间学习。</li>
+              <li>如果想更像“整理框架”，可以把字号稍微调大，段落之间留更明显的间距。</li>
+            </ul>
+          </article>
+
+          <article class="floating-card creature-card">
+            <div class="creature-mark" aria-hidden="true">⛰</div>
+            <div>
+              <p class="eyebrow">Ridge Reminder</p>
+              <h3>峰线提醒</h3>
+              <p>“先站稳，再往上。清晰感往往出现在更高一点的地方。”</p>
+            </div>
+          </article>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="./mountain.js"></script>
+</body>
+</html>

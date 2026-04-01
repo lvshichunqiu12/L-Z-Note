@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>月夜笔记工作区</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./moon.css">
+</head>
+<body>
+  <div class="moon-shell">
+    <aside class="moon-sidebar">
+      <div class="brand-block">
+        <p class="eyebrow">Nocturne Atelier</p>
+        <h1>Moon Notes</h1>
+        <p class="brand-copy">把工作区收进夜色里。整体偏暗，但由银色月光把层次慢慢推开，再用星点和萤火虫做轻微呼吸。</p>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="主题导航">
+        <a class="nav-item" href="./index.html">
+          <span class="nav-icon">泉</span>
+          <span>泉 · 流水手记</span>
+        </a>
+        <a class="nav-item" href="./mountain.html">
+          <span class="nav-icon">山</span>
+          <span>山 · 云岭草稿</span>
+        </a>
+        <a class="nav-item" href="./flower.html">
+          <span class="nav-icon">花</span>
+          <span>花 · 花径摘录</span>
+        </a>
+        <a class="nav-item active" href="./moon.html" aria-current="page">
+          <span class="nav-icon">月</span>
+          <span>月 · 银夜札记</span>
+        </a>
+      </nav>
+
+      <section class="sidebar-card ambient-card">
+        <div class="card-head">
+          <p class="eyebrow">Night Climate</p>
+          <strong>夜色环境</strong>
+        </div>
+        <p>远处是低亮月光，近处有细小星芒与萤火尾光。输入时，不是扩散的图形，而是从光标处闪一下的星光。</p>
+        <div class="night-meter" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+
+      <section class="sidebar-card companions-card">
+        <div class="card-head">
+          <p class="eyebrow">Night Elements</p>
+          <strong>夜间构成</strong>
+        </div>
+        <ul class="companion-list">
+          <li><span>月轮</span><small>负责主要银光层次</small></li>
+          <li><span>星群</span><small>负责高处的呼吸感</small></li>
+          <li><span>萤火虫</span><small>负责近景流动和生命感</small></li>
+        </ul>
+      </section>
+    </aside>
+
+    <main class="moon-workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Moon Workspace</p>
+          <h2>月下沉浸笔记页</h2>
+        </div>
+        <div class="topbar-actions">
+          <div class="time-pill">
+            <span>月时刻</span>
+            <strong id="clock">--:--</strong>
+          </div>
+          <button class="pill-button" type="button">静夜模式</button>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div class="hero-backdrop" aria-hidden="true">
+          <div class="moon-glow"></div>
+          <div class="moon-disc"></div>
+          <div class="night-hill hill-a"></div>
+          <div class="night-hill hill-b"></div>
+          <div class="night-hill hill-c"></div>
+          <div class="star star-a"></div>
+          <div class="star star-b"></div>
+          <div class="star star-c"></div>
+          <div class="star star-d"></div>
+          <div class="star star-e"></div>
+          <div class="star star-f"></div>
+          <div class="star star-g"></div>
+          <div class="star star-h"></div>
+          <div class="star star-i"></div>
+          <div class="star star-j"></div>
+          <div class="firefly firefly-a"></div>
+          <div class="firefly firefly-b"></div>
+          <div class="firefly firefly-c"></div>
+          <div class="firefly firefly-d"></div>
+          <div class="firefly firefly-e"></div>
+          <div class="firefly firefly-f"></div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">Lunar Focus Habitat</p>
+          <h3>让文字像夜空里忽明忽暗的星光，在安静里闪一下，再慢慢落回月色。</h3>
+          <p>工作区整体切成偏暗色调，用银白和冷蓝把月光提起来。输入时，光标附近会亮起很短的星芒与细碎微光，像夜里呼吸了一次。</p>
+        </div>
+
+        <div class="hero-ribbon">
+          <span>Silver moonlight</span>
+          <span>Starlight typing</span>
+          <span>Firefly accents</span>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="editor-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Night Draft</p>
+              <h3>月影草稿</h3>
+            </div>
+            <div class="panel-tools" aria-label="编辑操作">
+              <button type="button">保存夜笺</button>
+              <button type="button">收起星图</button>
+            </div>
+          </div>
+
+          <div class="editor-controls" aria-label="编辑设置">
+            <div class="font-size-control">
+              <span class="control-label">字号</span>
+              <button class="size-button" id="decreaseFont" type="button" aria-label="减小字号">A-</button>
+              <input
+                class="size-slider"
+                id="fontSizeSlider"
+                type="range"
+                min="16"
+                max="26"
+                step="1"
+                value="18"
+                aria-label="调整编辑区字号"
+              >
+              <button class="size-button" id="increaseFont" type="button" aria-label="增大字号">A+</button>
+              <strong class="size-value" id="fontSizeValue">18px</strong>
+            </div>
+          </div>
+
+          <div class="editor-wrap" id="editorWrap">
+            <div class="moon-sheen" aria-hidden="true"></div>
+            <div class="editor-header">
+              <span class="tag">银夜草稿</span>
+              <span class="hint">输入时会在光标附近闪出短暂星芒</span>
+            </div>
+            <div
+              class="editor"
+              id="editor"
+              contenteditable="true"
+              spellcheck="false"
+              aria-label="月主题笔记编辑区"
+            >夜色把房间收得很安静，窗外只剩月光和少量风声。你可以把更缓慢、更深一点的句子放在这里，让它们像夜空里的星点，亮一下，再回到柔和的暗处。</div>
+            <div class="editor-footer">
+              <span>建议：适合写长段反思、夜读摘录、带停顿感的慢笔记。</span>
+              <strong id="charCount">61 字</strong>
+            </div>
+            <div class="starlight-layer" id="starlightLayer" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <aside class="insight-column">
+          <article class="floating-card palette-card">
+            <p class="eyebrow">Moon Palette</p>
+            <h3>夜色配比</h3>
+            <div class="swatches" aria-hidden="true">
+              <span style="--swatch:#07111e;"></span>
+              <span style="--swatch:#0d1f31;"></span>
+              <span style="--swatch:#243a56;"></span>
+              <span style="--swatch:#cfd8e6;"></span>
+              <span style="--swatch:#f2e6ae;"></span>
+            </div>
+            <p>暗色是主体，但不会闷死。用银灰月光把结构照出来，再给一点萤火黄，让页面在静的时候也还有生命感。</p>
+          </article>
+
+          <article class="floating-card ritual-card">
+            <p class="eyebrow">Night Writing</p>
+            <h3>月页节奏</h3>
+            <ul>
+              <li>段落可以更长一点，像月光慢慢扫过地面。</li>
+              <li>适合深夜札记、复盘、安静但带锋利感的想法。</li>
+              <li>如果想更沉静，可以把字号调大，减少一屏里的信息密度。</li>
+            </ul>
+          </article>
+
+          <article class="floating-card creature-card">
+            <div class="creature-mark" aria-hidden="true">🌙</div>
+            <div>
+              <p class="eyebrow">Night Reminder</p>
+              <h3>月色提醒</h3>
+              <p>“不是所有文字都要响亮，有些只需要在黑暗里发光。”</p>
+            </div>
+          </article>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="./moon.js"></script>
+</body>
+</html>
