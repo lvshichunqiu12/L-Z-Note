@@ -577,6 +577,7 @@ body::after {
 .panel-tools {
   display: flex;
   gap: 0.7rem;
+  flex-wrap: wrap;
 }
 
 .panel-tools button {
@@ -592,8 +593,47 @@ body::after {
 
 .editor-controls {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 0.9rem;
+}
+
+.workspace-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.save-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.78rem 1rem;
+  border: 1px solid rgba(193, 206, 228, 0.12);
+  border-radius: 999px;
+  background: rgba(11, 22, 36, 0.74);
+  color: var(--silver);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.save-dot {
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 999px;
+  background: rgba(217, 227, 243, 0.82);
+  box-shadow: 0 0 0 0.25rem rgba(217, 227, 243, 0.08);
+}
+
+.save-state[data-state="dirty"] .save-dot {
+  background: rgba(243, 229, 165, 0.92);
+  box-shadow: 0 0 0 0.25rem rgba(243, 229, 165, 0.12);
+}
+
+.save-state[data-state="error"] .save-dot {
+  background: rgba(224, 126, 126, 0.92);
+  box-shadow: 0 0 0 0.25rem rgba(224, 126, 126, 0.12);
 }
 
 .font-size-control {
@@ -968,7 +1008,8 @@ body::after {
 
   .topbar-actions,
   .panel-tools,
-  .font-size-control {
+  .font-size-control,
+  .workspace-meta {
     width: 100%;
     flex-wrap: wrap;
   }

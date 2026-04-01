@@ -7,10 +7,18 @@ const fontSizeSlider = document.querySelector("#fontSizeSlider");
 const fontSizeValue = document.querySelector("#fontSizeValue");
 const decreaseFont = document.querySelector("#decreaseFont");
 const increaseFont = document.querySelector("#increaseFont");
+const saveNoteBtn = document.querySelector("#saveNoteBtn");
+const exportMarkdownBtn = document.querySelector("#exportMarkdownBtn");
+const exportTextBtn = document.querySelector("#exportTextBtn");
+const saveState = document.querySelector("#saveState");
+const saveStateText = document.querySelector("#saveStateText");
 
 const FONT_SIZE_KEY = "murmur-notes-moon-font-size";
+const STORAGE_KEY = "murmur-notes-moon-draft";
 const MIN_FONT_SIZE = 16;
 const MAX_FONT_SIZE = 26;
+const EXPORT_PREFIX = "murmur-moon-note";
+const THEME_LABEL = "月";
 
 function updateClock() {
   const now = new Date();
@@ -24,6 +32,104 @@ function updateClock() {
 function updateCount() {
   const text = editor.textContent.replace(/\s+/g, "");
   charCount.textContent = `${text.length} 字`;
+}
+
+function updateSaveState(text, state = "saved") {
+  saveState.dataset.state = state;
+  saveStateText.textContent = text;
+}
+
+function getEditorMarkup() {
+  return editor.innerHTML.trim();
+}
+
+function getEditorText() {
+  return editor.innerText.replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function formatTime(value) {
+  return new Date(value).toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+function persistDraft() {
+  const payload = {
+    content: getEditorMarkup(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    updateSaveState(`已保存 ${formatTime(payload.updatedAt)}`, "saved");
+    return true;
+  } catch (error) {
+    updateSaveState("保存失败", "error");
+    return false;
+  }
+}
+
+function restoreDraft() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      updateSaveState("自动保存已开启", "saved");
+      return;
+    }
+
+    const payload = JSON.parse(raw);
+    if (payload?.content) {
+      editor.innerHTML = payload.content;
+    }
+
+    if (payload?.updatedAt) {
+      updateSaveState(`已恢复 ${formatTime(payload.updatedAt)}`, "saved");
+    } else {
+      updateSaveState("已恢复本地草稿", "saved");
+    }
+  } catch (error) {
+    updateSaveState("读取草稿失败", "error");
+  }
+}
+
+function buildFileName(extension) {
+  const stamp = new Date().toISOString().slice(0, 16).replace("T", "-").replace(":", "");
+  return `${EXPORT_PREFIX}-${stamp}.${extension}`;
+}
+
+function downloadFile(content, extension, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = buildFileName(extension);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  updateSaveState(`已导出 ${extension.toUpperCase()}`, "saved");
+}
+
+function exportMarkdown() {
+  const content = getEditorText();
+  const exportedAt = new Date().toLocaleString("zh-CN", { hour12: false });
+  const markdown = [
+    "# 银夜札记",
+    "",
+    `- 主题：${THEME_LABEL}`,
+    `- 导出时间：${exportedAt}`,
+    "",
+    content,
+    "",
+  ].join("\n");
+  downloadFile(markdown, "md", "text/markdown;charset=utf-8");
+}
+
+function exportText() {
+  const content = getEditorText();
+  downloadFile(content, "txt", "text/plain;charset=utf-8");
 }
 
 function applyFontSize(size) {
@@ -133,6 +239,7 @@ function createStarburst(sourcePoint) {
 let glowTimer = null;
 let pulseTimer = null;
 let lastBurstAt = 0;
+let saveTimer = null;
 
 function triggerTypingGlimmer() {
   editor.classList.remove("typing-glimmer");
@@ -148,6 +255,11 @@ function triggerTypingGlimmer() {
 function handleInput() {
   updateCount();
   triggerTypingGlimmer();
+  updateSaveState("编辑中...", "dirty");
+  window.clearTimeout(saveTimer);
+  saveTimer = window.setTimeout(() => {
+    persistDraft();
+  }, 480);
   window.clearTimeout(glowTimer);
   glowTimer = window.setTimeout(() => {
     const now = Date.now();
@@ -182,9 +294,19 @@ decreaseFont.addEventListener("click", () => {
 increaseFont.addEventListener("click", () => {
   applyFontSize(Number(fontSizeSlider.value) + 1);
 });
+saveNoteBtn.addEventListener("click", () => {
+  window.clearTimeout(saveTimer);
+  persistDraft();
+});
+exportMarkdownBtn.addEventListener("click", exportMarkdown);
+exportTextBtn.addEventListener("click", exportText);
 
 updateClock();
-updateCount();
+restoreDraft();
 restoreFontSize();
+updateCount();
 createStarburst();
 window.setInterval(updateClock, 1000 * 30);
+window.addEventListener("pagehide", () => {
+  persistDraft();
+});

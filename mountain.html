@@ -116,12 +116,19 @@
               <h3>山脊草稿</h3>
             </div>
             <div class="panel-tools" aria-label="编辑操作">
-              <button type="button">保存路标</button>
-              <button type="button">折叠云层</button>
+              <button id="saveNoteBtn" type="button">立即保存</button>
+              <button id="exportMarkdownBtn" type="button">导出 MD</button>
+              <button id="exportTextBtn" type="button">导出 TXT</button>
             </div>
           </div>
 
           <div class="editor-controls" aria-label="编辑设置">
+            <div class="workspace-meta">
+              <div class="save-state" id="saveState" data-state="saved">
+                <span class="save-dot" aria-hidden="true"></span>
+                <strong id="saveStateText">自动保存已开启</strong>
+              </div>
+            </div>
             <div class="font-size-control">
               <span class="control-label">字号</span>
               <button class="size-button" id="decreaseFont" type="button" aria-label="减小字号">A-</button>
