@@ -288,98 +288,228 @@ body::after {
   overflow: hidden;
 }
 
-.mountain,
-.river,
-.mist,
-.petal,
+.lake-glow,
+.far-ridge,
+.lake-sheet,
+.water-band,
+.shore-mist,
+.lotus-pad,
+.lotus-flower,
+.reeds,
 .bird,
-.deer {
+.reeds::before,
+.reeds::after {
   position: absolute;
 }
 
-.mountain {
-  bottom: 0;
-  filter: blur(0.2px);
+.lake-glow {
+  inset: auto auto 6% -8%;
+  width: 26rem;
+  height: 12rem;
+  background: radial-gradient(circle, rgba(202, 238, 229, 0.46), transparent 68%);
+  filter: blur(16px);
 }
 
-.mountain-a {
-  left: -5%;
-  width: 50%;
-  height: 48%;
-  background: linear-gradient(180deg, rgba(176, 207, 201, 0.16), rgba(101, 146, 138, 0.42));
-  clip-path: polygon(0% 100%, 18% 58%, 30% 68%, 43% 34%, 57% 64%, 72% 40%, 100% 100%);
+.far-ridge {
+  bottom: 18%;
+  filter: blur(0.1px);
 }
 
-.mountain-b {
-  right: 22%;
-  width: 42%;
-  height: 44%;
-  background: linear-gradient(180deg, rgba(195, 224, 216, 0.12), rgba(113, 152, 145, 0.38));
-  clip-path: polygon(0% 100%, 20% 45%, 38% 65%, 58% 20%, 79% 60%, 100% 100%);
+.ridge-a {
+  left: -4%;
+  width: 44%;
+  height: 34%;
+  background: linear-gradient(180deg, rgba(173, 205, 197, 0.14), rgba(124, 165, 156, 0.34));
+  clip-path: polygon(0 100%, 16% 58%, 34% 74%, 50% 38%, 72% 66%, 100% 100%);
 }
 
-.mountain-c {
-  right: -3%;
+.ridge-b {
+  left: 28%;
+  width: 38%;
+  height: 32%;
+  background: linear-gradient(180deg, rgba(187, 218, 210, 0.12), rgba(133, 174, 165, 0.3));
+  clip-path: polygon(0 100%, 18% 50%, 40% 72%, 58% 34%, 78% 60%, 100% 100%);
+}
+
+.ridge-c {
+  right: -2%;
   width: 34%;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(218, 238, 230, 0.1), rgba(145, 173, 167, 0.32));
-  clip-path: polygon(0% 100%, 18% 52%, 44% 30%, 72% 68%, 100% 100%);
+  height: 30%;
+  background: linear-gradient(180deg, rgba(198, 226, 218, 0.1), rgba(146, 181, 173, 0.28));
+  clip-path: polygon(0 100%, 22% 56%, 44% 34%, 70% 66%, 100% 100%);
 }
 
-.river {
-  left: 12%;
-  right: 10%;
-  bottom: 8%;
-  height: 25%;
+.lake-sheet {
+  left: 0;
+  right: 0;
+  bottom: -2%;
+  height: 33%;
   background:
-    linear-gradient(180deg, rgba(225, 246, 242, 0.06), rgba(134, 210, 202, 0.3)),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.28) 0 22px, rgba(165, 218, 210, 0.12) 22px 44px);
-  clip-path: polygon(0 64%, 10% 56%, 21% 60%, 34% 46%, 45% 54%, 58% 42%, 72% 48%, 84% 38%, 100% 48%, 100% 100%, 0 100%);
-  animation: riverFlow 11s linear infinite;
+    linear-gradient(180deg, rgba(203, 239, 232, 0.1), rgba(132, 203, 196, 0.34)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(186, 228, 219, 0.08) 32%, rgba(255, 255, 255, 0.14) 58%, rgba(158, 213, 203, 0.08));
+  clip-path: polygon(0 38%, 14% 28%, 28% 34%, 44% 24%, 60% 30%, 76% 20%, 100% 26%, 100% 100%, 0 100%);
 }
 
-.mist {
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.72), transparent 70%);
-  filter: blur(12px);
+.water-band {
+  left: 14%;
+  border-top: 2px solid rgba(179, 229, 219, 0.46);
+  border-radius: 100% 100% 0 0;
   opacity: 0.9;
+  animation: lakeShimmer 7.5s ease-in-out infinite;
 }
 
-.mist-a {
-  top: 12%;
-  left: 8%;
-  width: 17rem;
-  height: 6rem;
-  animation: float 12s ease-in-out infinite;
+.water-band-a {
+  width: 54%;
+  height: 2.2rem;
+  bottom: 16%;
 }
 
-.mist-b {
-  top: 24%;
-  right: 14%;
-  width: 15rem;
-  height: 5rem;
-  animation: float 15s ease-in-out infinite reverse;
+.water-band-b {
+  width: 34%;
+  height: 1.4rem;
+  bottom: 11%;
+  left: 26%;
+  animation-delay: 1.4s;
 }
 
-.petal {
-  width: 1rem;
+.water-band-c {
+  width: 22%;
   height: 1rem;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 222, 231, 0.95), rgba(255, 191, 204, 0.45));
-  border-radius: 0 70% 70% 70%;
-  transform: rotate(25deg);
-  opacity: 0.75;
+  bottom: 8%;
+  left: 58%;
+  animation-delay: 2.2s;
 }
 
-.petal-a {
-  right: 18%;
-  top: 14%;
-  animation: petalFall 9s linear infinite;
+.shore-mist {
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.78), transparent 72%);
+  filter: blur(14px);
+  opacity: 0.76;
 }
 
-.petal-b {
-  right: 24%;
-  top: 4%;
-  animation: petalFall 12s linear infinite 1.4s;
+.shore-mist-a {
+  width: 16rem;
+  height: 4.8rem;
+  left: 8%;
+  bottom: 18%;
+}
+
+.shore-mist-b {
+  width: 13rem;
+  height: 4rem;
+  right: 14%;
+  bottom: 20%;
+}
+
+.lotus-pad {
+  bottom: 10%;
+  border-radius: 58% 42% 52% 48%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(180, 221, 197, 0.92), rgba(104, 155, 127, 0.88));
+  box-shadow: inset -8px -8px 14px rgba(76, 120, 95, 0.18);
+}
+
+.lotus-pad::after {
+  content: "";
+  position: absolute;
+  top: 6%;
+  left: 48%;
+  width: 2px;
+  height: 44%;
+  background: rgba(235, 251, 238, 0.54);
+  transform: rotate(12deg);
+}
+
+.lotus-pad-a {
+  left: 58%;
+  width: 5rem;
+  height: 3.8rem;
+}
+
+.lotus-pad-b {
+  left: 68%;
+  width: 3.8rem;
+  height: 3rem;
+}
+
+.lotus-pad-c {
+  left: 76%;
+  width: 4.8rem;
+  height: 3.5rem;
+}
+
+.lotus-flower {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50% 50% 44% 44%;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 249, 253, 0.98), rgba(255, 208, 223, 0.86) 58%, rgba(236, 151, 181, 0.72));
+  box-shadow: 0 8px 20px rgba(230, 164, 188, 0.18);
+}
+
+.lotus-flower::before,
+.lotus-flower::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 1.85rem;
+  height: 1.2rem;
+  border-radius: 50% 50% 44% 44%;
+  background: inherit;
+}
+
+.lotus-flower::before {
+  transform: rotate(-28deg);
+}
+
+.lotus-flower::after {
+  transform: rotate(28deg);
+}
+
+.lotus-flower-a {
+  left: 62%;
+  bottom: 17%;
+}
+
+.lotus-flower-b {
+  left: 78%;
+  bottom: 15%;
+  transform: scale(0.9);
+}
+
+.reeds {
+  bottom: 14%;
+  width: 4rem;
+  height: 5rem;
+}
+
+.reeds::before,
+.reeds::after {
+  content: "";
+  bottom: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(115, 155, 132, 0), rgba(115, 155, 132, 0.8));
+  transform-origin: bottom center;
+}
+
+.reeds::before {
+  left: 0.8rem;
+  transform: rotate(-10deg);
+}
+
+.reeds::after {
+  left: 1.8rem;
+  transform: rotate(8deg);
+}
+
+.reeds-a {
+  left: 10%;
+}
+
+.reeds-b {
+  right: 8%;
 }
 
 .bird {
@@ -402,25 +532,15 @@ body::after {
 }
 
 .bird-a {
-  left: 52%;
+  left: 48%;
   animation: glide 15s linear infinite;
 }
 
 .bird-b {
-  left: 65%;
-  top: 20%;
+  left: 57%;
+  top: 18%;
   transform: scale(0.8);
   animation: glide 12s linear infinite reverse;
-}
-
-.deer {
-  bottom: 20%;
-  right: 12%;
-  width: 3.5rem;
-  height: 3rem;
-  background: rgba(74, 108, 100, 0.18);
-  clip-path: polygon(13% 74%, 25% 48%, 43% 45%, 56% 31%, 74% 40%, 82% 57%, 95% 65%, 91% 74%, 73% 65%, 70% 100%, 58% 100%, 56% 69%, 40% 69%, 35% 100%, 23% 100%, 21% 72%);
-  filter: blur(0.3px);
 }
 
 .hero-copy {
@@ -773,29 +893,18 @@ body::after {
   }
 }
 
-@keyframes riverFlow {
+@keyframes lakeShimmer {
   0% {
-    transform: translateX(-1.5%);
+    transform: translateX(0) scaleX(1);
+    opacity: 0.74;
   }
   50% {
-    transform: translateX(1.2%);
+    transform: translateX(1.4%) scaleX(1.03);
+    opacity: 1;
   }
   100% {
-    transform: translateX(-1.5%);
-  }
-}
-
-@keyframes petalFall {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(25deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: translate3d(-140px, 260px, 0) rotate(220deg);
-    opacity: 0;
+    transform: translateX(0) scaleX(1);
+    opacity: 0.74;
   }
 }
 
