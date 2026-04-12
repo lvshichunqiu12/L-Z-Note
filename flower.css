@@ -210,6 +210,145 @@ body::after {
   font-weight: 600;
 }
 
+.sidebar-scene-card {
+  position: relative;
+  flex: 1;
+  min-height: 16rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.sidebar-scene-card::before {
+  content: "";
+  position: absolute;
+  inset: auto auto -18% -14%;
+  width: 12rem;
+  height: 12rem;
+  background: radial-gradient(circle, rgba(248, 215, 226, 0.42), transparent 68%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+.scene-card-visual {
+  position: relative;
+  min-height: 9rem;
+  border-radius: 1.3rem;
+  overflow: hidden;
+  border: 1px solid rgba(214, 170, 185, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 252, 0.68), rgba(255, 239, 244, 0.84)),
+    radial-gradient(circle at 72% 20%, rgba(255, 243, 212, 0.28), transparent 22%);
+}
+
+.scene-haze,
+.scene-branch,
+.scene-bloom,
+.scene-petal {
+  position: absolute;
+}
+
+.scene-haze {
+  inset: 10% 8% auto;
+  height: 44%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.46), transparent 74%);
+  filter: blur(12px);
+  opacity: 0.88;
+}
+
+.scene-branch {
+  height: 0.26rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(132, 113, 92, 0.42), rgba(169, 145, 122, 0.2));
+  transform-origin: left center;
+}
+
+.scene-card-visual .branch-a {
+  top: 28%;
+  left: 12%;
+  width: 44%;
+  transform: rotate(14deg);
+}
+
+.scene-card-visual .branch-b {
+  top: 36%;
+  right: 10%;
+  width: 30%;
+  transform: rotate(-22deg);
+}
+
+.scene-bloom {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 231, 167, 0.92) 0 14%, transparent 15%),
+    radial-gradient(circle at 50% 18%, rgba(255, 250, 252, 0.98) 0 22%, rgba(241, 130, 166, 0.92) 23% 42%, transparent 43%),
+    radial-gradient(circle at 82% 50%, rgba(255, 250, 252, 0.98) 0 22%, rgba(241, 130, 166, 0.92) 23% 42%, transparent 43%),
+    radial-gradient(circle at 50% 82%, rgba(255, 250, 252, 0.98) 0 22%, rgba(241, 130, 166, 0.92) 23% 42%, transparent 43%),
+    radial-gradient(circle at 18% 50%, rgba(255, 250, 252, 0.98) 0 22%, rgba(241, 130, 166, 0.92) 23% 42%, transparent 43%);
+  filter: drop-shadow(0 10px 16px rgba(223, 151, 176, 0.2));
+}
+
+.bloom-a {
+  top: 18%;
+  left: 26%;
+}
+
+.bloom-b {
+  top: 30%;
+  right: 22%;
+  transform: scale(0.84);
+}
+
+.bloom-c {
+  bottom: 16%;
+  left: 46%;
+  transform: scale(0.72);
+}
+
+.scene-petal {
+  width: 0.86rem;
+  height: 1.1rem;
+  border-radius: 75% 0 72% 72%;
+  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.96), rgba(244, 177, 200, 0.92));
+  box-shadow: 0 10px 16px rgba(221, 165, 184, 0.14);
+}
+
+.petal-a {
+  right: 18%;
+  bottom: 28%;
+  transform: rotate(18deg);
+}
+
+.petal-b {
+  left: 20%;
+  bottom: 18%;
+  transform: rotate(-24deg) scale(0.88);
+}
+
+.petal-c {
+  right: 34%;
+  top: 22%;
+  transform: rotate(46deg) scale(0.72);
+}
+
+.scene-note {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.scene-note span {
+  color: rgba(92, 58, 69, 0.92);
+  font-weight: 700;
+}
+
+.scene-note small {
+  color: var(--muted);
+}
+
 .flower-workspace {
   padding: 1.8rem;
 }
@@ -273,6 +412,33 @@ body::after {
     linear-gradient(180deg, rgba(255, 252, 252, 0.78), rgba(255, 245, 248, 0.9)),
     radial-gradient(circle at 12% 12%, rgba(255, 233, 240, 0.84), transparent 32%);
   min-height: 360px;
+}
+
+.hero-panel-image {
+  padding: 0;
+  background: none;
+}
+
+.hero-reference-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+
+.flower-hero-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(255, 249, 251, 0.06), rgba(255, 245, 248, 0.18)),
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.12), transparent 36%);
+  pointer-events: none;
+}
+
+.flower-hero-image .hero-backdrop {
+  display: none;
 }
 
 .hero-backdrop {
@@ -386,20 +552,54 @@ body::after {
   animation-delay: 2.1s;
 }
 
-.hero-copy,
-.hero-ribbon {
+.hero-copy {
   position: relative;
   z-index: 1;
+}
+
+.flower-hero-image .hero-copy {
+  z-index: 2;
 }
 
 .hero-copy {
   max-width: 58rem;
 }
 
+.flower-hero-image .hero-copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 2.8rem 2rem 5.9rem;
+  text-align: center;
+}
+
+.flower-hero-image .hero-copy .eyebrow {
+  color: rgba(112, 76, 92, 0.64);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.28);
+}
+
 .hero-copy h3 {
   margin: 0.45rem 0 0.9rem;
   font-size: clamp(2.2rem, 4vw, 4.6rem);
   line-height: 0.96;
+}
+
+.flower-hero-image .hero-copy h3 {
+  margin: 0.8rem auto 0.9rem;
+  max-width: min(100%, 23ch);
+  font-size: clamp(1.85rem, 3.2vw, 2.8rem);
+  line-height: 1.18;
+  color: rgba(101, 60, 77, 0.74);
+  text-shadow: 0 4px 24px rgba(255, 255, 255, 0.24);
+}
+
+.flower-hero-image .hero-copy h3 span {
+  display: block;
+  white-space: nowrap;
 }
 
 .hero-copy p:last-child {
@@ -410,20 +610,12 @@ body::after {
   font-size: 1.02rem;
 }
 
-.hero-ribbon {
-  display: inline-flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-top: 1.6rem;
-}
-
-.hero-ribbon span {
-  padding: 0.52rem 0.9rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(212, 167, 182, 0.14);
-  color: var(--rose-deep);
-  font-size: 0.86rem;
+.flower-hero-image .hero-copy p:last-child {
+  max-width: 31rem;
+  color: rgba(86, 63, 74, 0.68);
+  line-height: 1.62;
+  font-size: 0.98rem;
+  text-shadow: 0 1px 14px rgba(255, 255, 255, 0.22);
 }
 
 .content-grid {
@@ -875,6 +1067,30 @@ body::after {
   .hero-panel {
     padding: 1.4rem;
     min-height: 420px;
+  }
+
+  .flower-hero-image {
+    padding: 0;
+  }
+
+  .flower-hero-image .hero-copy {
+    padding: 1.4rem 1rem 4.8rem;
+  }
+
+  .flower-hero-image .hero-copy h3 {
+    max-width: min(100%, 15ch);
+    font-size: clamp(1.45rem, 5.6vw, 2rem);
+    line-height: 1.2;
+  }
+
+  .flower-hero-image .hero-copy h3 span {
+    white-space: normal;
+  }
+
+  .flower-hero-image .hero-copy p:last-child {
+    max-width: 18rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
   }
 
   .editor {

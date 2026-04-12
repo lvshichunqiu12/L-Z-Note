@@ -475,6 +475,10 @@ body::after {
   text-shadow: 0 2px 14px rgba(255, 255, 255, 0.18);
 }
 
+.spring-hero-image .hero-copy h3 {
+  font-size: clamp(1.9rem, 3.65vw, 3.2rem);
+}
+
 .hero-panel-image .hero-copy h3 span {
   display: block;
   white-space: nowrap;
@@ -1495,6 +1499,10 @@ body::after {
     font-size: clamp(1.55rem, 6.5vw, 2.3rem);
     max-width: none;
     line-height: 1.12;
+  }
+
+  .spring-hero-image .hero-copy h3 {
+    font-size: clamp(1.45rem, 5.9vw, 2.1rem);
   }
 
   .hero-panel-image .hero-copy h3 span {
