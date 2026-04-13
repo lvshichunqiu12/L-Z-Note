@@ -10,6 +10,15 @@ const increaseFont = document.querySelector("#increaseFont");
 const saveNoteBtn = document.querySelector("#saveNoteBtn");
 const exportMarkdownBtn = document.querySelector("#exportMarkdownBtn");
 const exportTextBtn = document.querySelector("#exportTextBtn");
+const newNoteBtn = document.querySelector("#newNoteBtn");
+const activeViewBtn = document.querySelector("#activeViewBtn");
+const archivedViewBtn = document.querySelector("#archivedViewBtn");
+const archiveNoteBtn = document.querySelector("#archiveNoteBtn");
+const clearArchivedBtn = document.querySelector("#clearArchivedBtn");
+const noteListHost = document.querySelector("#noteListHost");
+const noteHubCopy = document.querySelector(".note-hub-toolbar + .note-hub-copy");
+const noteViewToggle = document.querySelector(".note-view-toggle");
+const noteTitleInput = document.querySelector("#noteTitleInput");
 const saveState = document.querySelector("#saveState");
 const saveStateText = document.querySelector("#saveStateText");
 
@@ -39,14 +48,58 @@ const fontSizeController = window.MurmurNotes.notePageCore.createFontSizeControl
     return size >= 22 ? "2.08" : "2";
   },
 });
-const notePageController = window.MurmurNotes.notePageCore.createNotePageController({
+let notePageController = null;
+const noteListController = window.MurmurNotes.noteListUi.createNoteListController({
+  container: noteListHost,
+  onSelect(noteId) {
+    void notePageController.switchToNote(noteId);
+  },
+  onAction(noteId, actionName) {
+    if (actionName === "restore") {
+      void notePageController.restoreArchivedNote(noteId);
+    }
+  },
+});
+notePageController = window.MurmurNotes.notePageCore.createNotePageController({
+  archivedListEmptyDescription: "暂时收起的峰线笔记会先放在这里，需要继续整理时再恢复回来。",
+  archivedListEmptyTitle: "归档夹还没有内容",
   defaultTitle: DEFAULT_TITLE,
   editor: editor,
   exportPrefix: EXPORT_PREFIX,
   initialContent: INITIAL_EDITOR_MARKUP,
+  noteListController: noteListController,
+  noteListEmptyDescription: "这里会显示最近编辑、结构草稿和后续的归档视图。",
+  noteListEmptyTitle: "山路还没有分岔",
+  onListViewChanged(view, activeNote, meta) {
+    activeViewBtn.classList.toggle("is-active", view === "active");
+    archivedViewBtn.classList.toggle("is-active", view === "archived");
+    archiveNoteBtn.disabled = view !== "active";
+    clearArchivedBtn.disabled = view !== "archived" || !meta.hasVisibleNotes;
+  },
+  onNoteChanged() {
+    updateCount();
+  },
   saveStateController: saveStateController,
   themeLabel: THEME_LABEL,
+  titleInput: noteTitleInput,
 });
+
+if (noteViewToggle) {
+  noteViewToggle.setAttribute("aria-label", "笔记视图");
+}
+if (activeViewBtn) {
+  activeViewBtn.textContent = "当前笔记";
+}
+if (archivedViewBtn) {
+  archivedViewBtn.textContent = "归档夹";
+}
+if (archiveNoteBtn) {
+  archiveNoteBtn.textContent = "归档当前";
+}
+if (noteHubCopy) {
+  noteHubCopy.textContent =
+    "这里会承接当前主题下的多篇笔记。常用的留在本页，完成一段的则先归档，让路径更清楚。";
+}
 
 function updateCount() {
   const text = editor.textContent.replace(/\s+/g, "");
@@ -190,6 +243,13 @@ let pulseTimer = null;
 let lastMistAt = 0;
 let saveTimer = null;
 
+function schedulePersist(delay) {
+  window.clearTimeout(saveTimer);
+  saveTimer = window.setTimeout(() => {
+    void notePageController.persistDraft();
+  }, delay || 480);
+}
+
 function triggerTypingMist() {
   editor.classList.remove("typing-mist");
   window.clearTimeout(pulseTimer);
@@ -205,10 +265,7 @@ function handleInput() {
   updateCount();
   triggerTypingMist();
   saveStateController.setDirty("编辑中...");
-  window.clearTimeout(saveTimer);
-  saveTimer = window.setTimeout(() => {
-    void notePageController.persistDraft();
-  }, 480);
+  schedulePersist(480);
   window.clearTimeout(mistTimer);
   mistTimer = window.setTimeout(() => {
     const now = Date.now();
@@ -221,6 +278,14 @@ function handleInput() {
 }
 
 editor.addEventListener("input", handleInput);
+noteTitleInput.addEventListener("input", () => {
+  saveStateController.setDirty("编辑中...");
+  schedulePersist(420);
+});
+noteTitleInput.addEventListener("blur", () => {
+  window.clearTimeout(saveTimer);
+  void notePageController.persistDraft();
+});
 editor.addEventListener("click", () => {
   createMistBurst(getCaretPoint());
   lastMistAt = Date.now();
@@ -246,6 +311,28 @@ increaseFont.addEventListener("click", () => {
 saveNoteBtn.addEventListener("click", () => {
   window.clearTimeout(saveTimer);
   void notePageController.persistDraft();
+});
+newNoteBtn.addEventListener("click", () => {
+  window.clearTimeout(saveTimer);
+  void notePageController.createNewNote().then((note) => {
+    if (note) {
+      createMistBurst();
+      lastMistAt = Date.now();
+    }
+  });
+});
+activeViewBtn.addEventListener("click", () => {
+  void notePageController.setListView("active");
+});
+archivedViewBtn.addEventListener("click", () => {
+  void notePageController.setListView("archived");
+});
+archiveNoteBtn.addEventListener("click", () => {
+  window.clearTimeout(saveTimer);
+  void notePageController.archiveCurrentNote();
+});
+clearArchivedBtn.addEventListener("click", () => {
+  void notePageController.clearArchivedNotes();
 });
 exportMarkdownBtn.addEventListener("click", () => {
   notePageController.exportMarkdown();

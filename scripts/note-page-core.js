@@ -93,9 +93,29 @@
   function createNotePageController(options) {
     const editor = options && options.editor;
     const saveStateController = options && options.saveStateController;
+    const noteListController = options && options.noteListController;
+    const titleInput = options && options.titleInput;
     const defaultTitle = (options && options.defaultTitle) || "未命名笔记";
     const themeLabel = (options && options.themeLabel) || "";
     const exportPrefix = (options && options.exportPrefix) || "murmur-note";
+    const noteListLimit =
+      Number.isFinite(options && options.noteListLimit) && Number(options.noteListLimit) > 0
+        ? Number(options.noteListLimit)
+        : 5;
+    const noteListEmptyTitle =
+      (options && options.noteListEmptyTitle) || "还没有更多笔记";
+    const noteListEmptyDescription =
+      (options && options.noteListEmptyDescription) || "这里会显示最近记录的内容。";
+    const archivedListEmptyTitle =
+      (options && options.archivedListEmptyTitle) || "归档夹还是空的";
+    const archivedListEmptyDescription =
+      (options && options.archivedListEmptyDescription) || "归档过的笔记会先放在这里。";
+    const clearArchivedConfirmMessage =
+      (options && options.clearArchivedConfirmMessage) || "清空归档后将无法恢复，确认继续吗？";
+    const onNoteChanged =
+      options && typeof options.onNoteChanged === "function" ? options.onNoteChanged : null;
+    const onListViewChanged =
+      options && typeof options.onListViewChanged === "function" ? options.onListViewChanged : null;
     const initialContent =
       options && typeof options.initialContent === "string"
         ? options.initialContent.trim()
@@ -107,6 +127,7 @@
 
     let appServices = null;
     let activeNote = null;
+    let listView = "active";
 
     function getEditorMarkup() {
       return editor.innerHTML.trim();
@@ -125,23 +146,111 @@
     }
 
     function getThemeMeta() {
-      return appServices?.themeMeta || null;
+      return appServices && appServices.themeMeta ? appServices.themeMeta : null;
     }
 
     function getThemeLabel() {
-      return getThemeMeta()?.label || themeLabel;
+      return (getThemeMeta() && getThemeMeta().label) || themeLabel;
     }
 
-    function getDefaultTitle() {
-      return activeNote?.title || getThemeMeta()?.defaultTitle || defaultTitle;
+    function getThemeDefaultTitle() {
+      return (getThemeMeta() && getThemeMeta().defaultTitle) || defaultTitle;
     }
 
     function getExportPrefix() {
-      return getThemeMeta()?.exportPrefix || exportPrefix;
+      return (getThemeMeta() && getThemeMeta().exportPrefix) || exportPrefix;
+    }
+
+    function getManualTitle() {
+      if (!titleInput) {
+        return "";
+      }
+
+      return String(titleInput.value || "").trim();
+    }
+
+    function syncTitleInput(note) {
+      if (!titleInput) {
+        return;
+      }
+
+      const themeDefault = getThemeDefaultTitle();
+      const noteTitle = note && typeof note.title === "string" ? note.title.trim() : "";
+      titleInput.value = noteTitle && noteTitle !== themeDefault ? noteTitle : "";
+      titleInput.placeholder = themeDefault;
+    }
+
+    function getDefaultTitle() {
+      return getManualTitle() || (activeNote && activeNote.title) || getThemeDefaultTitle();
     }
 
     function getActiveNote() {
       return activeNote;
+    }
+
+    function getListView() {
+      return listView;
+    }
+
+    function notifyNoteChanged(note) {
+      if (onNoteChanged) {
+        onNoteChanged(note);
+      }
+    }
+
+    function notifyListViewChanged(meta) {
+      if (onListViewChanged) {
+        onListViewChanged(listView, activeNote, meta || {});
+      }
+    }
+
+    function hydrateListNote(repository, note) {
+      return {
+        ...note,
+        displayTitle: repository.resolveNoteTitle(note, getThemeDefaultTitle()),
+        themeLabel: getThemeLabel(),
+      };
+    }
+
+    async function renderNoteList() {
+      if (!noteListController) {
+        return [];
+      }
+
+      const services = await ensureServices();
+      const repository = services.repository;
+      const baseQuery = {
+        theme: services.themeMeta.id,
+        limit: noteListLimit,
+      };
+      const notes =
+        listView === "archived"
+          ? await repository.listArchivedNotes(baseQuery)
+          : await repository.listActiveNotes(baseQuery);
+      const hydratedNotes = notes.map(function mapNote(note) {
+        return hydrateListNote(repository, note);
+      });
+
+      noteListController.render(hydratedNotes, {
+        activeNoteId: listView === "active" && activeNote ? activeNote.id : "",
+        emptyTitle: listView === "archived" ? archivedListEmptyTitle : noteListEmptyTitle,
+        emptyDescription:
+          listView === "archived" ? archivedListEmptyDescription : noteListEmptyDescription,
+        itemAction:
+          listView === "archived"
+            ? {
+                name: "restore",
+                label: "恢复",
+              }
+            : null,
+        selectable: listView !== "archived",
+      });
+
+      notifyListViewChanged({
+        hasVisibleNotes: hydratedNotes.length > 0,
+        visibleCount: hydratedNotes.length,
+      });
+      return hydratedNotes;
     }
 
     async function persistDraft() {
@@ -150,23 +259,87 @@
 
         if (!activeNote) {
           activeNote = await services.repository.createDraft(services.themeMeta.id, {
-            title: getDefaultTitle(),
+            title: getManualTitle(),
             content: getEditorMarkup() || initialContent,
           });
         }
 
         activeNote = await services.repository.saveNote({
           ...activeNote,
-          title: getDefaultTitle(),
+          title: getManualTitle(),
           content: getEditorMarkup(),
           theme: services.themeMeta.id,
         });
 
+        syncTitleInput(activeNote);
+        await renderNoteList();
         saveStateController.setSavedAt(activeNote.updatedAt);
         return true;
       } catch (error) {
         saveStateController.setError("保存失败");
         return false;
+      }
+    }
+
+    async function createNewNote() {
+      try {
+        const services = await ensureServices();
+
+        if (activeNote) {
+          await persistDraft();
+        }
+
+        listView = "active";
+        activeNote = await services.repository.createDraft(services.themeMeta.id, {
+          title: "",
+          content: "",
+        });
+
+        editor.innerHTML = "";
+        syncTitleInput(null);
+        notifyNoteChanged(activeNote);
+        await renderNoteList();
+        saveStateController.setSaved("已创建新笔记");
+        editor.focus();
+        return activeNote;
+      } catch (error) {
+        saveStateController.setError("新建失败");
+        return null;
+      }
+    }
+
+    async function switchToNote(noteId) {
+      const nextId = String(noteId || "");
+      if (!nextId || listView !== "active") {
+        return null;
+      }
+
+      if (activeNote && activeNote.id === nextId) {
+        return activeNote;
+      }
+
+      try {
+        if (activeNote) {
+          await persistDraft();
+        }
+
+        const services = await ensureServices();
+        const note = await services.repository.getNoteById(nextId);
+        if (!note || note.archived) {
+          return null;
+        }
+
+        activeNote = note;
+        editor.innerHTML = note.content || "";
+        syncTitleInput(activeNote);
+        notifyNoteChanged(activeNote);
+        await renderNoteList();
+        saveStateController.setRecovered(note.updatedAt);
+        editor.focus();
+        return note;
+      } catch (error) {
+        saveStateController.setError("切换失败");
+        return null;
       }
     }
 
@@ -177,23 +350,30 @@
 
         if (!note) {
           note = await services.repository.createDraft(services.themeMeta.id, {
-            title: getDefaultTitle(),
+            title: getManualTitle(),
             content: initialContent,
           });
           activeNote = note;
+          syncTitleInput(activeNote);
+          notifyNoteChanged(activeNote);
+          await renderNoteList();
           saveStateController.setSaved("自动保存已开启");
           return note;
         }
 
         activeNote = note;
+        editor.innerHTML = note.content || "";
+        syncTitleInput(activeNote);
+        notifyNoteChanged(activeNote);
+        await renderNoteList();
 
-        if (note.content) {
-          editor.innerHTML = note.content;
-        }
-
-        if (services.migrationResult?.migrated?.some(function hasMigration(item) {
-          return item.theme === services.themeMeta.id;
-        })) {
+        if (
+          services.migrationResult &&
+          Array.isArray(services.migrationResult.migrated) &&
+          services.migrationResult.migrated.some(function hasMigration(item) {
+            return item.theme === services.themeMeta.id;
+          })
+        ) {
           saveStateController.setMigrated("已迁移旧草稿");
         } else if (note.updatedAt) {
           saveStateController.setRecovered(note.updatedAt);
@@ -205,6 +385,116 @@
       } catch (error) {
         saveStateController.setError("读取草稿失败");
         return null;
+      }
+    }
+
+    async function setListView(nextView) {
+      const normalized = nextView === "archived" ? "archived" : "active";
+      if (listView === normalized) {
+        await renderNoteList();
+        return listView;
+      }
+
+      listView = normalized;
+      await renderNoteList();
+      return listView;
+    }
+
+    async function archiveCurrentNote() {
+      if (!activeNote) {
+        return null;
+      }
+
+      try {
+        await persistDraft();
+        const services = await ensureServices();
+        await services.repository.archiveNote(activeNote.id);
+
+        const fallbackNote = await services.repository.getRecentNote(services.themeMeta.id);
+        listView = "active";
+
+        if (fallbackNote) {
+          activeNote = fallbackNote;
+          editor.innerHTML = fallbackNote.content || "";
+          syncTitleInput(activeNote);
+          notifyNoteChanged(activeNote);
+          await renderNoteList();
+          saveStateController.setSaved("已归档当前笔记");
+          return activeNote;
+        }
+
+        activeNote = await services.repository.createDraft(services.themeMeta.id, {
+          title: "",
+          content: "",
+        });
+        editor.innerHTML = "";
+        syncTitleInput(activeNote);
+        notifyNoteChanged(activeNote);
+        await renderNoteList();
+        saveStateController.setSaved("已归档当前笔记");
+        return activeNote;
+      } catch (error) {
+        saveStateController.setError("归档失败");
+        return null;
+      }
+    }
+
+    async function restoreArchivedNote(noteId) {
+      const nextId = String(noteId || "");
+      if (!nextId) {
+        return null;
+      }
+
+      try {
+        const services = await ensureServices();
+        const restored = await services.repository.restoreArchived(nextId);
+        if (!restored) {
+          return null;
+        }
+
+        listView = "active";
+        activeNote = restored;
+        editor.innerHTML = restored.content || "";
+        syncTitleInput(activeNote);
+        notifyNoteChanged(activeNote);
+        await renderNoteList();
+        saveStateController.setSaved("已恢复归档笔记");
+        editor.focus();
+        return restored;
+      } catch (error) {
+        saveStateController.setError("恢复失败");
+        return null;
+      }
+    }
+
+    async function clearArchivedNotes() {
+      try {
+        const services = await ensureServices();
+        const archivedNotes = await services.repository.listArchivedNotes({
+          theme: services.themeMeta.id,
+        });
+
+        if (!archivedNotes.length) {
+          await renderNoteList();
+          saveStateController.setSaved("归档夹已经清空");
+          return 0;
+        }
+
+        if (!globalScope.confirm(clearArchivedConfirmMessage)) {
+          return 0;
+        }
+
+        const removedCount = await services.repository.clearArchivedNotes({
+          theme: services.themeMeta.id,
+        });
+        await renderNoteList();
+        saveStateController.setSaved(
+          removedCount > 0 ? `已清空归档（${removedCount} 篇）` : "归档夹已经清空"
+        );
+        return removedCount;
+      } catch (error) {
+        saveStateController.setError("清空失败");
+        return 0;
       }
     }
 
@@ -255,6 +545,9 @@
     }
 
     return {
+      archiveCurrentNote,
+      clearArchivedNotes,
+      createNewNote,
       ensureServices,
       exportMarkdown,
       exportText,
@@ -262,9 +555,14 @@
       getDefaultTitle,
       getEditorMarkup,
       getEditorText,
+      getListView,
       getThemeLabel,
       persistDraft,
+      renderNoteList,
+      restoreArchivedNote,
       restoreDraft,
+      setListView,
+      switchToNote,
     };
   }
 

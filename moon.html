@@ -138,12 +138,6 @@
           </h3>
           <p>用银蓝夜色做背景，把月光压成更安静的底层。输入时，光标附近仍会亮起短暂星芒，但头图本身更像一整片夜色。</p>
         </div>
-
-        <div class="hero-ribbon">
-          <span>Silver moonlight</span>
-          <span>Starlight typing</span>
-          <span>Firefly accents</span>
-        </div>
       </section>
 
       <section class="content-grid">
@@ -158,6 +152,11 @@
               <button id="exportMarkdownBtn" type="button">导出 MD</button>
               <button id="exportTextBtn" type="button">导出 TXT</button>
             </div>
+          </div>
+
+          <div class="note-title-bar">
+            <label class="note-title-label" for="noteTitleInput">当前标题</label>
+            <input class="note-title-input" id="noteTitleInput" type="text" maxlength="40" placeholder="银夜札记">
           </div>
 
           <div class="editor-controls" aria-label="编辑设置">
@@ -207,6 +206,37 @@
         </section>
 
         <aside class="insight-column">
+          <article class="floating-card note-hub-card">
+            <div class="note-hub-head">
+              <div>
+                <p class="eyebrow">Note Current</p>
+                <h3>夜航笔记簿</h3>
+              </div>
+              <div class="note-hub-actions">
+                <span class="note-hub-chip">静夜回看</span>
+                <button class="note-hub-action" id="newNoteBtn" type="button">新建笔记</button>
+              </div>
+            </div>
+            <p class="note-hub-copy">这里会放当前主题下最近编辑的几篇笔记，让夜读、复盘和慢写的内容不再只剩一页草稿。</p>
+            <div class="note-hub-toolbar">
+              <div class="note-view-toggle" aria-label="笔记视图">
+                <button class="note-view-button is-active" id="activeViewBtn" type="button">当前笔记</button>
+                <button class="note-view-button" id="archivedViewBtn" type="button">归档夹</button>
+              </div>
+              <div class="note-hub-toolbar-actions">
+                <button class="note-hub-action note-hub-action-secondary" id="archiveNoteBtn" type="button">归档当前</button>
+                <button class="note-hub-action note-hub-action-danger" id="clearArchivedBtn" type="button">清空归档</button>
+              </div>
+            </div>
+            <p class="note-hub-copy">这里会承接前面写过的夜航笔记。正在用的留在本页，需要暂存的先放到归档。</p>
+            <div class="note-list-host" id="noteListHost">
+              <div class="note-list__empty" data-note-list-empty="true">
+                <strong class="note-list__empty-title">夜色里还很安静</strong>
+                <p class="note-list__empty-text">Day 4 接入交互后，这里会挂上最近编辑、恢复草稿和后续归档入口。</p>
+              </div>
+            </div>
+          </article>
+
           <article class="floating-card palette-card">
             <p class="eyebrow">Moon Palette</p>
             <h3>夜色配比</h3>
@@ -218,16 +248,6 @@
               <span style="--swatch:#f2e6ae;"></span>
             </div>
             <p>暗色是主体，但不会闷死。用银灰月光把结构照出来，再给一点萤火黄，让页面在静的时候也还有生命感。</p>
-          </article>
-
-          <article class="floating-card ritual-card">
-            <p class="eyebrow">Night Writing</p>
-            <h3>月页节奏</h3>
-            <ul>
-              <li>段落可以更长一点，像月光慢慢扫过地面。</li>
-              <li>适合深夜札记、复盘、安静但带锋利感的想法。</li>
-              <li>如果想更沉静，可以把字号调大，减少一屏里的信息密度。</li>
-            </ul>
           </article>
 
           <article class="floating-card creature-card">
@@ -251,6 +271,7 @@
   <script src="./scripts/notes-migration.js"></script>
   <script src="./scripts/app-init.js"></script>
   <script src="./scripts/ui-save-state.js"></script>
+  <script src="./scripts/ui-note-list.js"></script>
   <script src="./scripts/note-page-core.js"></script>
   <script src="./moon.js"></script>
 </body>
