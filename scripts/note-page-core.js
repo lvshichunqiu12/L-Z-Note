@@ -1,5 +1,6 @@
 (function attachNotePageCore(globalScope) {
   const root = globalScope.MurmurNotes || (globalScope.MurmurNotes = {});
+  const PENDING_NOTE_ID_KEY = "murmur-notes-pending-note-id";
 
   function createClockController(options) {
     const clockEl = options && options.clockEl;
@@ -128,6 +129,8 @@
     let appServices = null;
     let activeNote = null;
     let listView = "active";
+    let searchQuery = "";
+    let themeFilter = "current";
 
     function getEditorMarkup() {
       return editor.innerHTML.trim();
@@ -192,6 +195,14 @@
       return listView;
     }
 
+    function getSearchQuery() {
+      return searchQuery;
+    }
+
+    function getThemeFilter() {
+      return themeFilter;
+    }
+
     function notifyNoteChanged(note) {
       if (onNoteChanged) {
         onNoteChanged(note);
@@ -205,11 +216,67 @@
     }
 
     function hydrateListNote(repository, note) {
+      const noteThemeMeta =
+        root.themeConfig && note && note.theme
+          ? root.themeConfig.getThemeMeta(note.theme)
+          : null;
+
       return {
         ...note,
         displayTitle: repository.resolveNoteTitle(note, getThemeDefaultTitle()),
-        themeLabel: getThemeLabel(),
+        themeLabel: noteThemeMeta ? noteThemeMeta.label : getThemeLabel(),
       };
+    }
+
+    function resolveThemeFilter(themeMeta) {
+      if (themeFilter === "all") {
+        return null;
+      }
+
+      if (themeFilter === "current") {
+        return themeMeta.id;
+      }
+
+      return root.themeConfig && root.themeConfig.THEMES[themeFilter] ? themeFilter : themeMeta.id;
+    }
+
+    function readPendingNoteId() {
+      try {
+        return globalScope.localStorage.getItem(PENDING_NOTE_ID_KEY) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function clearPendingNoteId() {
+      try {
+        globalScope.localStorage.removeItem(PENDING_NOTE_ID_KEY);
+      } catch (error) {
+        // Ignore storage failures during cross-theme navigation cleanup.
+      }
+    }
+
+    function writePendingNoteId(noteId) {
+      try {
+        globalScope.localStorage.setItem(PENDING_NOTE_ID_KEY, noteId);
+      } catch (error) {
+        // If this fails, navigation still works; the destination page will fall back to recent note.
+      }
+    }
+
+    function navigateToThemeNote(note) {
+      if (!note || !root.themeConfig) {
+        return false;
+      }
+
+      const targetTheme = root.themeConfig.getThemeMeta(note.theme);
+      if (!targetTheme || !targetTheme.page) {
+        return false;
+      }
+
+      writePendingNoteId(note.id);
+      globalScope.location.href = targetTheme.page;
+      return true;
     }
 
     async function renderNoteList() {
@@ -219,23 +286,40 @@
 
       const services = await ensureServices();
       const repository = services.repository;
-      const baseQuery = {
-        theme: services.themeMeta.id,
-        limit: noteListLimit,
-      };
-      const notes =
+      const resolvedTheme = resolveThemeFilter(services.themeMeta);
+      const baseQuery = resolvedTheme
+        ? {
+            theme: resolvedTheme,
+          }
+        : {};
+      const rawNotes =
         listView === "archived"
           ? await repository.listArchivedNotes(baseQuery)
           : await repository.listActiveNotes(baseQuery);
-      const hydratedNotes = notes.map(function mapNote(note) {
-        return hydrateListNote(repository, note);
-      });
+      const matchedNotes = root.notesSearch
+        ? root.notesSearch.filterNotes(rawNotes, searchQuery)
+        : rawNotes;
+      const hydratedNotes = matchedNotes
+        .slice(0, noteListLimit)
+        .map(function mapNote(note) {
+          return hydrateListNote(repository, note);
+        });
+      const hasSearch = Boolean(searchQuery.trim());
+      const emptyTitle = hasSearch
+        ? "没有找到匹配笔记"
+        : listView === "archived"
+          ? archivedListEmptyTitle
+          : noteListEmptyTitle;
+      const emptyDescription = hasSearch
+        ? "换个关键词，或切换主题筛选后再试。"
+        : listView === "archived"
+          ? archivedListEmptyDescription
+          : noteListEmptyDescription;
 
       noteListController.render(hydratedNotes, {
         activeNoteId: listView === "active" && activeNote ? activeNote.id : "",
-        emptyTitle: listView === "archived" ? archivedListEmptyTitle : noteListEmptyTitle,
-        emptyDescription:
-          listView === "archived" ? archivedListEmptyDescription : noteListEmptyDescription,
+        emptyTitle,
+        emptyDescription,
         itemAction:
           listView === "archived"
             ? {
@@ -248,6 +332,9 @@
 
       notifyListViewChanged({
         hasVisibleNotes: hydratedNotes.length > 0,
+        matchedCount: matchedNotes.length,
+        searchQuery,
+        themeFilter,
         visibleCount: hydratedNotes.length,
       });
       return hydratedNotes;
@@ -290,6 +377,8 @@
         }
 
         listView = "active";
+        themeFilter = "current";
+        searchQuery = "";
         activeNote = await services.repository.createDraft(services.themeMeta.id, {
           title: "",
           content: "",
@@ -329,6 +418,11 @@
           return null;
         }
 
+        if (note.theme !== services.themeMeta.id) {
+          navigateToThemeNote(note);
+          return note;
+        }
+
         activeNote = note;
         editor.innerHTML = note.content || "";
         syncTitleInput(activeNote);
@@ -346,7 +440,21 @@
     async function restoreDraft() {
       try {
         const services = await ensureServices();
-        let note = await services.repository.getRecentNote(services.themeMeta.id);
+        const pendingNoteId = readPendingNoteId();
+        let note = null;
+
+        if (pendingNoteId) {
+          const pendingNote = await services.repository.getNoteById(pendingNoteId);
+          if (pendingNote && pendingNote.theme === services.themeMeta.id && !pendingNote.archived) {
+            note = pendingNote;
+          }
+
+          clearPendingNoteId();
+        }
+
+        if (!note) {
+          note = await services.repository.getRecentNote(services.themeMeta.id);
+        }
 
         if (!note) {
           note = await services.repository.createDraft(services.themeMeta.id, {
@@ -398,6 +506,22 @@
       listView = normalized;
       await renderNoteList();
       return listView;
+    }
+
+    async function setSearchQuery(nextQuery) {
+      searchQuery = String(nextQuery || "");
+      await renderNoteList();
+      return searchQuery;
+    }
+
+    async function setThemeFilter(nextFilter) {
+      const normalized = String(nextFilter || "current");
+      themeFilter =
+        normalized === "all" || normalized === "current" || (root.themeConfig && root.themeConfig.THEMES[normalized])
+          ? normalized
+          : "current";
+      await renderNoteList();
+      return themeFilter;
     }
 
     async function archiveCurrentNote() {
@@ -452,6 +576,11 @@
           return null;
         }
 
+        if (restored.theme !== services.themeMeta.id) {
+          navigateToThemeNote(restored);
+          return restored;
+        }
+
         listView = "active";
         activeNote = restored;
         editor.innerHTML = restored.content || "";
@@ -470,11 +599,15 @@
     async function clearArchivedNotes() {
       try {
         const services = await ensureServices();
+        const resolvedTheme = resolveThemeFilter(services.themeMeta);
         const archivedNotes = await services.repository.listArchivedNotes({
-          theme: services.themeMeta.id,
+          ...(resolvedTheme ? { theme: resolvedTheme } : {}),
         });
+        const matchedNotes = root.notesSearch
+          ? root.notesSearch.filterNotes(archivedNotes, searchQuery)
+          : archivedNotes;
 
-        if (!archivedNotes.length) {
+        if (!matchedNotes.length) {
           await renderNoteList();
           saveStateController.setSaved("归档夹已经清空");
           return 0;
@@ -484,9 +617,12 @@
           return 0;
         }
 
-        const removedCount = await services.repository.clearArchivedNotes({
-          theme: services.themeMeta.id,
-        });
+        await Promise.all(
+          matchedNotes.map(function removeArchivedNote(note) {
+            return services.repository.deleteNote(note.id);
+          })
+        );
+        const removedCount = matchedNotes.length;
         await renderNoteList();
         saveStateController.setSaved(
           removedCount > 0 ? `已清空归档（${removedCount} 篇）` : "归档夹已经清空"
@@ -556,12 +692,16 @@
       getEditorMarkup,
       getEditorText,
       getListView,
+      getSearchQuery,
+      getThemeFilter,
       getThemeLabel,
       persistDraft,
       renderNoteList,
       restoreArchivedNote,
       restoreDraft,
+      setSearchQuery,
       setListView,
+      setThemeFilter,
       switchToNote,
     };
   }

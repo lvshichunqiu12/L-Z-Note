@@ -994,6 +994,59 @@ body::after {
   gap: 0.55rem;
 }
 
+.note-hub-search {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.35rem 0 0.95rem;
+}
+
+.note-search-input {
+  width: 100%;
+  min-height: 2.45rem;
+  padding: 0.62rem 0.9rem;
+  border: 1px solid rgba(190, 122, 151, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.note-search-input:focus {
+  border-color: rgba(188, 108, 142, 0.34);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 0 0 4px rgba(238, 178, 198, 0.16);
+}
+
+.note-theme-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.note-theme-filter__button {
+  min-height: 1.95rem;
+  padding: 0.32rem 0.68rem;
+  border: 1px solid rgba(190, 122, 151, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.note-theme-filter__button.is-active {
+  border-color: rgba(188, 108, 142, 0.26);
+  background: rgba(255, 240, 246, 0.94);
+  color: var(--accent-deep);
+}
+
 .note-view-toggle {
   display: inline-flex;
   align-items: center;

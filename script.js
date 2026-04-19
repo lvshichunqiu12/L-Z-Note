@@ -15,6 +15,8 @@ const activeViewBtn = document.querySelector("#activeViewBtn");
 const archivedViewBtn = document.querySelector("#archivedViewBtn");
 const archiveNoteBtn = document.querySelector("#archiveNoteBtn");
 const clearArchivedBtn = document.querySelector("#clearArchivedBtn");
+const noteSearchInput = document.querySelector("#noteSearchInput");
+const noteThemeFilterButtons = document.querySelectorAll("[data-theme-filter]");
 const noteListHost = document.querySelector("#noteListHost");
 const noteHubCopy = document.querySelector(".note-hub-toolbar + .note-hub-copy");
 const noteViewToggle = document.querySelector(".note-view-toggle");
@@ -72,6 +74,12 @@ notePageController = window.MurmurNotes.notePageCore.createNotePageController({
   onListViewChanged(view, activeNote, meta) {
     activeViewBtn.classList.toggle("is-active", view === "active");
     archivedViewBtn.classList.toggle("is-active", view === "archived");
+    if (noteSearchInput && noteSearchInput.value !== (meta.searchQuery || "")) {
+      noteSearchInput.value = meta.searchQuery || "";
+    }
+    noteThemeFilterButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.themeFilter === meta.themeFilter);
+    });
     archiveNoteBtn.disabled = view !== "active";
     clearArchivedBtn.disabled = view !== "archived" || !meta.hasVisibleNotes;
   },
@@ -232,6 +240,14 @@ activeViewBtn.addEventListener("click", () => {
 });
 archivedViewBtn.addEventListener("click", () => {
   void notePageController.setListView("archived");
+});
+noteSearchInput.addEventListener("input", () => {
+  void notePageController.setSearchQuery(noteSearchInput.value);
+});
+noteThemeFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    void notePageController.setThemeFilter(button.dataset.themeFilter);
+  });
 });
 archiveNoteBtn.addEventListener("click", () => {
   window.clearTimeout(saveTimer);

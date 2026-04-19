@@ -218,6 +218,17 @@
                 <button class="note-hub-action note-hub-action-danger" id="clearArchivedBtn" type="button">清空归档</button>
               </div>
             </div>
+            <div class="note-hub-search">
+              <input class="note-search-input" id="noteSearchInput" type="search" placeholder="搜索标题或内容" autocomplete="off" aria-label="搜索笔记">
+              <div class="note-theme-filter" aria-label="主题筛选">
+                <button class="note-theme-filter__button is-active" type="button" data-theme-filter="current">本主题</button>
+                <button class="note-theme-filter__button" type="button" data-theme-filter="all">全部</button>
+                <button class="note-theme-filter__button" type="button" data-theme-filter="spring">泉</button>
+                <button class="note-theme-filter__button" type="button" data-theme-filter="mountain">山</button>
+                <button class="note-theme-filter__button" type="button" data-theme-filter="flower">花</button>
+                <button class="note-theme-filter__button" type="button" data-theme-filter="moon">月</button>
+              </div>
+            </div>
             <p class="note-hub-copy">这里先留给同主题下的多篇笔记。正在写的留在本页，想先收好的段落则收进归档夹。</p>
             <div class="note-list-host" id="noteListHost">
               <div class="note-list__empty" data-note-list-empty="true">
@@ -262,6 +273,7 @@
   <script src="./scripts/app-init.js"></script>
   <script src="./scripts/ui-save-state.js"></script>
   <script src="./scripts/ui-note-list.js"></script>
+  <script src="./scripts/notes-search.js"></script>
   <script src="./scripts/note-page-core.js"></script>
   <script src="./flower.js"></script>
 </body>
